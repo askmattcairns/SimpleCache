@@ -1,0 +1,27 @@
+{
+    "name": "simple-cache/simple-cache",
+    "version": "1.0",
+    "description": "PHP cache to json class",
+    "keywords": ["cache", "json"],
+    "homepage": "https://github.com/askmattcairns/SimpleCache",
+    "authors": [
+        {
+            "name": "Matt Cairns",
+            "email": "askmattcairns@gmail.com",
+            "homepage": "http://askmattcairns.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "askmattcairns@gmail.com",
+        "issues": "https://github.com/askmattcairns/SimpleCache/issues"
+    },
+    "require": {
+        "php": ">=5.4"
+    },
+    "autoload": {
+        "psr-0": {
+            "SimpleCache": ""
+        }
+    }
+}
