@@ -3,32 +3,33 @@ namespace SimpleCache;
 
 class SimpleCache
 {
+    private $cacheFileName = null;
     private $cachePath = "";
     private $cacheDir = "CACHE";
     private $cacheExt = ".cache";
     private $lifetime = 60; // Cache is valid for 60 seconds.
 
-    public function __construct()
+    public function __construct($cacheFileName)
     {
-
+        $this->cacheFileName = $cacheFileName;
     }
 
-    public function create( $name, $data )
+    public function create( $data )
     {
-        return file_put_contents( $this->cacheName($name), json_encode( $data ) );
+        return file_put_contents( $this->cacheName(), json_encode( $data ) );
     }
 
-    public function read( $name )
+    public function read()
     {
-        $cache = file_get_contents( $this->cacheName($name) );
+        $cache = file_get_contents( $this->cacheName() );
         return json_decode( $cache );
     }
 
-    public function isExpired( $name )
+    public function isExpired()
     {
-        if( $this->cacheExists( $name ) )
+        if( $this->cacheExists() )
         {
-            if( $this->cacheAge($name) > $this->lifetime )
+            if( $this->cacheAge() > $this->lifetime )
             {
                 return true;
             }
@@ -51,21 +52,21 @@ class SimpleCache
         $this->cachePath = $val;
     }
 
-    private function cacheAge( $name )
+    private function cacheAge()
     {
         $now = date("U");
-        $mtime = filemtime( $this->cacheName($name) );
+        $mtime = filemtime( $this->cacheName() );
 
         return bcsub($now, $mtime);
     }
 
-    private function cacheExists( $name )
+    private function cacheExists()
     {
-        return file_exists( $this->cacheName($name) );
+        return file_exists( $this->cacheName() );
     }
 
-    private function cacheName( $name )
+    private function cacheName()
     {
-        return $this->cachePath . DIRECTORY_SEPARATOR . $this->cacheDir . DIRECTORY_SEPARATOR . $name . $this->cacheExt;
+        return $this->cachePath . DIRECTORY_SEPARATOR . $this->cacheDir . DIRECTORY_SEPARATOR . $this->cacheFileName . $this->cacheExt;
     }
 }
