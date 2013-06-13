@@ -3,43 +3,56 @@ namespace SimpleCache;
 
 class SimpleCache
 {
-    private $cacheFileName = null;
-    private $cachePath = "";
-    private $cacheDir = "CACHE";
-    private $cacheExt = ".cache";
+    private $fileName = null;
+    private $path = ""; // most have trailing slash
+    private $dir = "CACHE";
+    private $ext = ".cache";
     private $lifetime = 60; // Cache is valid for 60 seconds.
 
-    public function __construct($cacheFileName)
+    public function __construct( $fileName )
     {
-        $this->cacheFileName = $cacheFileName;
+        $this->fileName = $fileName;
     }
 
-    public function create( $data )
+    public function write( $data )
     {
-        return file_put_contents( $this->cacheName(), json_encode( $data ) );
+        if( is_array( $data ) or is_object( $data ) )
+            $data = json_encode( $data );
+
+        return file_put_contents( $this->name(), $data );
     }
 
     public function read()
     {
-        $cache = file_get_contents( $this->cacheName() );
-        return json_decode( $cache );
+        $cache = file_get_contents( $this->name() );
+        if( $data = json_decode( $cache ) )
+            return $data;
+        else
+            return $cache;
     }
 
     public function isExpired()
     {
-        if( $this->cacheExists() )
+        if( $this->lifetime == 0 )
         {
-            if( $this->cacheAge() > $this->lifetime )
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
         else
-            return true;
+        {
+            if( $this->exists() )
+            {
+                if( $this->age() > $this->lifetime )
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+                return true;
+        }
 
     }
 
@@ -47,26 +60,26 @@ class SimpleCache
         $this->lifetime = $val;
     }
 
-    public function setCachePath( $val )
+    public function setPath( $val )
     {
-        $this->cachePath = $val;
+        $this->path = $val;
     }
 
-    private function cacheAge()
+    private function age()
     {
         $now = date("U");
-        $mtime = filemtime( $this->cacheName() );
+        $mtime = filemtime( $this->name() );
 
         return bcsub($now, $mtime);
     }
 
-    private function cacheExists()
+    public function exists()
     {
-        return file_exists( $this->cacheName() );
+        return file_exists( $this->name() );
     }
 
-    private function cacheName()
+    private function name()
     {
-        return $this->cachePath . DIRECTORY_SEPARATOR . $this->cacheDir . DIRECTORY_SEPARATOR . $this->cacheFileName . $this->cacheExt;
+        return $this->path . $this->dir . DIRECTORY_SEPARATOR . $this->fileName . $this->ext;
     }
 }
