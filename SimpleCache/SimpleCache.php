@@ -4,7 +4,7 @@ namespace SimpleCache;
 class SimpleCache
 {
     private $fileName = null;
-    private $path = ""; // most have trailing slash
+    private $path = ""; // must have trailing slash.
     private $dir = "CACHE";
     private $ext = ".cache";
     private $lifetime = 60; // Cache is valid for 60 seconds.
